@@ -28,6 +28,10 @@ export const problems = pgTable("problems", {
   thoughtProcess: text("thought_process"),
   pseudocode: text("pseudocode"),
   screenshotUrl: text("screenshot_url"),
+  reviewedSolution1: text("reviewed_solution_1"),
+  reviewedSolution2: text("reviewed_solution_2"),
+  reminderDate: timestamp("reminder_date"),
+  timeSpent: integer("time_spent"), // in minutes
   solvedAt: timestamp("solved_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -41,6 +45,7 @@ export const goals = pgTable("goals", {
   currentProgress: integer("current_progress").notNull().default(0),
   deadline: timestamp("deadline"),
   status: text("status").notNull().default('Active'), // 'Active', 'Completed', 'Paused'
+  reminderDate: timestamp("reminder_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -50,6 +55,9 @@ export const userSettings = pgTable("user_settings", {
   theme: text("theme").notNull().default('dark'), // 'light', 'dark'
   notifications: boolean("notifications").notNull().default(true),
   reminderTime: text("reminder_time"),
+  reminderEmail: text("reminder_email"),
+  currentStreak: integer("current_streak").notNull().default(0),
+  lastActiveDate: timestamp("last_active_date"),
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({

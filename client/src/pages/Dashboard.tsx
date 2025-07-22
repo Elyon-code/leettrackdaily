@@ -1,6 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Layout } from "@/components/Layout";
+import { MotivationalQuote } from "@/components/MotivationalQuotes";
+import { MilestoneTracker } from "@/components/Celebration";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -55,18 +57,11 @@ export default function Dashboard() {
   const progressPercentage = stats ? Math.round((stats.todaysSolved / dailyGoal) * 100) : 0;
 
   return (
-    <Layout currentPage="Dashboard">
-      <div className="space-y-8">
-        {/* Motivational Quote */}
-        <Card className="bg-gradient-to-r from-[#FF6B35] to-red-500 text-white border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3 mb-2">
-              <Quote className="h-5 w-5 opacity-70" />
-              <span className="font-medium">Daily Motivation</span>
-            </div>
-            <p className="text-lg font-medium">{getRandomQuote()}</p>
-          </CardContent>
-        </Card>
+    <MilestoneTracker userId={1}>
+      <Layout currentPage="Dashboard">
+        <div className="space-y-8">
+          {/* Daily Motivational Quote */}
+          <MotivationalQuote />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -298,6 +293,7 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
-    </Layout>
+      </Layout>
+    </MilestoneTracker>
   );
 }

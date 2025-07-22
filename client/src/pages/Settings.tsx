@@ -53,9 +53,9 @@ export default function Settings() {
   useEffect(() => {
     if (user) {
       setUserForm({
-        name: user.name || "",
-        email: user.email || "",
-        dailyGoal: user.dailyGoal || 5,
+        name: (user as any).name || "",
+        email: (user as any).email || "",
+        dailyGoal: (user as any).dailyGoal || 5,
       });
     }
   }, [user]);
@@ -212,15 +212,37 @@ export default function Settings() {
                   </p>
                 </div>
                 <Switch
-                  checked={settings?.notifications || false}
+                  checked={(settings as any)?.notifications || false}
                   onCheckedChange={handleNotificationToggle}
                 />
               </div>
 
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
-                <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                  💡 Notification features are coming soon! You'll be able to set custom reminder times and notification preferences.
-                </p>
+              <div className="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Email Reminders</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Receive email reminders for goals and milestones
+                    </p>
+                  </div>
+                  <Switch
+                    checked={(settings as any)?.emailReminders || false}
+                    onCheckedChange={(enabled) => updateSettingsMutation.mutate({ emailReminders: enabled })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">Reminder Time</label>
+                  <Input
+                    type="time"
+                    value={(settings as any)?.reminderTime || "09:00"}
+                    onChange={(e) => updateSettingsMutation.mutate({ reminderTime: e.target.value })}
+                    className="w-32"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Daily reminder time (when email notifications are enabled)
+                  </p>
+                </div>
               </div>
             </div>
           </CardContent>

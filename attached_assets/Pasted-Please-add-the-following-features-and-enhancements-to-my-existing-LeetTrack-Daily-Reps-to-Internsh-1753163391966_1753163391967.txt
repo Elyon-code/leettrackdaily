@@ -1,0 +1,56 @@
+Please add the following features and enhancements to my existing "LeetTrack: Daily Reps to Internships" web app to help me better track and improve my LeetCode practice. The app is for personal use only, so no login/authentication is needed, and all data should persist locally or with lightweight backend as appropriate.
+
+1️⃣ **In-built timer per problem:**
+- On the Problem Log page, add a "Start Timer" button next to each problem entry.
+- When clicked, allow me to select a timer duration (e.g., 30, 45, 60 minutes) and show a visible countdown.
+- Display a "Time's up!" notification or modal when timer finishes.
+
+2️⃣ **Math logic for reps/day recalibration:**
+- In the Goal Manager, automatically calculate and display how many problems per day I must solve to meet my active goal, based on target problem count and days remaining.
+- Dynamically adjust this required reps/day value if I get ahead or fall behind schedule.
+
+3️⃣ **Email reminder system:**
+- Add a "Set Reminder" button for both goals and individual problems.
+- When clicked, let me enter a date/time for a reminder.
+- Implement basic email reminder functionality using Nodemailer (or similar) with SMTP (or Mailgun API).
+- Store my preferred reminder email address in Settings.
+
+4️⃣ **Reviewed Solutions fields:**
+- In the Problem Log entry form, add two new editable textareas:
+  - "Reviewed Solution #1 Notes"
+  - "Reviewed Solution #2 Notes"
+- These notes should save and be displayed along with each problem entry.
+
+5️⃣ **Pattern Vault filtering:**
+- On the Pattern Mastery page, implement clickable filters at the top for pattern names.
+- When a pattern is clicked, show only logged problems tagged with that pattern.
+
+6️⃣ **Milestone celebrations:**
+- Add a celebratory animation (e.g., confetti or popup) when I:
+  - Complete my daily rep goal
+  - Reach 50% or 100% of a larger goal
+  - Hit streak milestones (e.g., 3-day streak, 7-day streak, etc.)
+
+7️⃣ **Streak tracking and persistence:**
+- Accurately track and persist my current streak:
+  - Increment streak when reps met on consecutive days
+  - Reset streak to 0 if I miss a day
+  - Show streak on Dashboard prominently.
+
+8️⃣ **Motivational quote rotation:**
+- Display a new motivational quote each day at the top of the Dashboard.
+- Rotate through a predefined list of at least 10 inspirational quotes.
+
+---
+
+💡 Additional requirements:
+- All new features must maintain the current polished LeetCode-inspired UI style and dark mode theme.
+- The app must remain fully editable and interactive: I should be able to add/edit/delete problems, edit goals, and everything should update visually.
+- Ensure everything is mobile-friendly and persists my data correctly.
+
+---
+
+📦 Deployment notes:
+- This must work immediately inside Replit and require no additional setup by me.
+- Keep the code modular and easy to extend further in the future.
+

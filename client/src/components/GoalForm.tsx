@@ -29,6 +29,7 @@ export function GoalForm({ open, onOpenChange, onSubmit, initialData, isEdit }: 
       targetProblems: initialData?.targetProblems || 75,
       currentProgress: initialData?.currentProgress || 0,
       deadline: initialData?.deadline || undefined,
+      reminderDate: initialData?.reminderDate ? new Date(initialData.reminderDate).toISOString().slice(0, 16) : "",
       status: initialData?.status || "Active",
       userId: 1,
     },
@@ -137,24 +138,68 @@ export function GoalForm({ open, onOpenChange, onSubmit, initialData, isEdit }: 
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="deadline"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Deadline (Optional)</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="date"
-                      {...field}
-                      value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="deadline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deadline (Optional)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="date"
+                        {...field}
+                        value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                        onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="reminderDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reminder Date (Optional)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="datetime-local"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Daily Reps Calculator */}
+            {form.watch("deadline") && form.watch("targetProblems") && form.watch("currentProgress") !== undefined && (
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Daily Reps Calculator</h4>
+                <div className="text-sm text-blue-800 dark:text-blue-200">
+                  {(() => {
+                    const deadline = new Date(form.watch("deadline"));
+                    const today = new Date();
+                    const daysRemaining = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                    const remainingProblems = form.watch("targetProblems") - form.watch("currentProgress");
+                    const dailyReps = daysRemaining > 0 ? Math.ceil(remainingProblems / daysRemaining) : remainingProblems;
+                    
+                    return (
+                      <div className="space-y-1">
+                        <p>Remaining problems: <strong>{remainingProblems}</strong></p>
+                        <p>Days remaining: <strong>{Math.max(0, daysRemaining)}</strong></p>
+                        <p>Daily reps needed: <strong className="text-lg">{Math.max(0, dailyReps)} problems/day</strong></p>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
               <Button

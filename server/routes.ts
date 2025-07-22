@@ -3,6 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
+import nodemailer from "nodemailer";
 import { storage } from "./storage";
 import { insertProblemSchema, insertGoalSchema, insertUserSettingsSchema } from "@shared/schema";
 
@@ -18,6 +19,56 @@ const upload = multer({
     }
   }
 });
+
+// Configure nodemailer (using Gmail as example)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'demo@example.com',
+    pass: process.env.EMAIL_PASS || 'demo-password'
+  }
+});
+
+// Email service functions
+const sendReminderEmail = async (to: string, type: 'daily' | 'goal' | 'milestone', data: any) => {
+  const templates = {
+    daily: {
+      subject: "🔥 LeetTrackDaily - Time to code!",
+      html: `
+        <h2>Don't break the chain! 🔗</h2>
+        <p>You have <strong>${data.remainingToday}</strong> problems left to reach your daily goal.</p>
+        <p>Current streak: <strong>${data.streak} days</strong></p>
+        <p><a href="http://localhost:5000">Continue your coding journey</a></p>
+      `
+    },
+    goal: {
+      subject: "🎯 Goal Reminder - LeetTrackDaily",
+      html: `
+        <h2>Goal Reminder: ${data.goalName}</h2>
+        <p>Progress: <strong>${data.progress}/${data.target}</strong> problems completed</p>
+        <p>Deadline: <strong>${data.deadline}</strong></p>
+        <p><a href="http://localhost:5000">Track your progress</a></p>
+      `
+    },
+    milestone: {
+      subject: "🎉 Milestone Achieved - LeetTrackDaily",
+      html: `
+        <h2>Congratulations! 🎉</h2>
+        <p>You've reached a new milestone: <strong>${data.milestone}</strong></p>
+        <p>Total problems solved: <strong>${data.totalSolved}</strong></p>
+        <p>Keep up the amazing work!</p>
+      `
+    }
+  };
+
+  const template = templates[type];
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER || 'demo@example.com',
+    to,
+    subject: template.subject,
+    html: template.html
+  });
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Default user ID for demo purposes
@@ -208,6 +259,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Reminder routes
+  app.get("/api/reminders", async (req, res) => {
+    try {
+      const reminders = await storage.getPendingReminders();
+      res.json(reminders);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reminders" });
+    }
+  });
+
+  app.post("/api/send-reminders", async (req, res) => {
+    try {
+      const user = await storage.getUser(DEFAULT_USER_ID);
+      const settings = await storage.getUserSettings(DEFAULT_USER_ID);
+      const stats = await storage.getUserStats(DEFAULT_USER_ID);
+      
+      if (!user?.email || !settings?.emailReminders) {
+        return res.json({ sent: 0, message: "Email reminders not configured" });
+      }
+
+      let emailsSent = 0;
+      
+      // Send daily reminder if enabled
+      if (settings.notifications) {
+        await sendReminderEmail(user.email, 'daily', {
+          remainingToday: Math.max(0, (user.dailyGoal || 5) - (stats?.todaysSolved || 0)),
+          streak: stats?.currentStreak || 0
+        });
+        emailsSent++;
+      }
+
+      // Check for goal reminders
+      const goals = await storage.getGoals(DEFAULT_USER_ID);
+      for (const goal of goals) {
+        if (goal.reminderDate && new Date(goal.reminderDate) <= new Date()) {
+          await sendReminderEmail(user.email, 'goal', {
+            goalName: goal.name,
+            progress: goal.currentProgress,
+            target: goal.targetProblems,
+            deadline: goal.deadline ? new Date(goal.deadline).toLocaleDateString() : 'No deadline'
+          });
+          emailsSent++;
+        }
+      }
+
+      res.json({ sent: emailsSent, message: `Sent ${emailsSent} reminder emails` });
+    } catch (error) {
+      console.error('Email error:', error);
+      res.status(500).json({ message: "Failed to send reminders" });
+    }
+  });
+
+  // Milestone celebration route
+  app.post("/api/celebrate-milestone", async (req, res) => {
+    try {
+      const { milestone, totalSolved } = req.body;
+      const user = await storage.getUser(DEFAULT_USER_ID);
+      const settings = await storage.getUserSettings(DEFAULT_USER_ID);
+      
+      if (user?.email && settings?.emailReminders) {
+        await sendReminderEmail(user.email, 'milestone', {
+          milestone,
+          totalSolved
+        });
+      }
+      
+      res.json({ success: true, message: "Milestone celebration sent!" });
+    } catch (error) {
+      console.error('Milestone error:', error);
+      res.status(500).json({ message: "Failed to send milestone celebration" });
+    }
+  });
+
+  // Streak routes
+  app.post("/api/streak/update", async (req, res) => {
+    try {
+      const result = await storage.updateStreak(DEFAULT_USER_ID);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update streak" });
+    }
+  });
+
+  app.post("/api/streak/reset", async (req, res) => {
+    try {
+      await storage.resetStreak(DEFAULT_USER_ID);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to reset streak" });
     }
   });
 

@@ -15,6 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = insertProblemSchema.extend({
   topicsString: z.string().optional(),
   tagsString: z.string().optional(),
+  reviewedSolution1: z.string().optional(),
+  reviewedSolution2: z.string().optional(),
+  reminderDate: z.string().optional(),
+  timeSpent: z.number().optional(),
 });
 
 interface ProblemFormProps {
@@ -45,6 +49,10 @@ export function ProblemForm({ open, onOpenChange, onSubmit, initialData, isEdit 
       variations: initialData?.variations || "",
       thoughtProcess: initialData?.thoughtProcess || "",
       pseudocode: initialData?.pseudocode || "",
+      reviewedSolution1: initialData?.reviewedSolution1 || "",
+      reviewedSolution2: initialData?.reviewedSolution2 || "",
+      reminderDate: initialData?.reminderDate ? new Date(initialData.reminderDate).toISOString().slice(0, 16) : "",
+      timeSpent: initialData?.timeSpent || undefined,
       userId: 1,
     },
   });
@@ -52,12 +60,13 @@ export function ProblemForm({ open, onOpenChange, onSubmit, initialData, isEdit 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
-      const { topicsString, tagsString, ...data } = values;
+      const { topicsString, tagsString, reminderDate, ...data } = values;
       
       const problemData: InsertProblem & { screenshot?: File } = {
         ...data,
         topics: topicsString ? topicsString.split(",").map(t => t.trim()).filter(Boolean) : [],
         tags: tagsString ? tagsString.split(",").map(t => t.trim()).filter(Boolean) : [],
+        reminderDate: reminderDate ? new Date(reminderDate) : undefined,
       };
 
       if (screenshot) {
@@ -279,6 +288,80 @@ export function ProblemForm({ open, onOpenChange, onSubmit, initialData, isEdit 
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="reviewedSolution1"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reviewed Solution #1 Notes</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Notes from reviewing solution #1..."
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="reviewedSolution2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reviewed Solution #2 Notes</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Notes from reviewing solution #2..."
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="reminderDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Set Reminder (Optional)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="datetime-local"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="timeSpent"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Time Spent (minutes)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number"
+                        placeholder="e.g., 45"
+                        {...field}
+                        onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium mb-2">Code Screenshot (Optional)</label>

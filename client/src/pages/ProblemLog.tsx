@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { Layout } from "@/components/Layout";
 import { ProblemForm } from "@/components/ProblemForm";
+import { Timer } from "@/components/Timer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -257,6 +258,7 @@ export default function ProblemLog() {
                         </TableCell>
                         <TableCell>
                           <div className="flex space-x-2">
+                            <Timer problemId={problem.id} problemName={problem.name} />
                             <Button
                               variant="ghost"
                               size="sm"

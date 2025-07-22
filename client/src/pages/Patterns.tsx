@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Layout } from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Puzzle, TrendingUp, Target } from "lucide-react";
 
 export default function Patterns() {
+  const [selectedPattern, setSelectedPattern] = useState<string>("All");
+  
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/stats"],
   });
@@ -120,6 +123,80 @@ export default function Patterns() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Pattern Filter Buttons */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Filter by Pattern</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Button
+                key="All"
+                variant={selectedPattern === "All" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedPattern("All")}
+                className={selectedPattern === "All" ? "bg-[#FF6B35] hover:bg-orange-600" : ""}
+              >
+                All Problems ({problems.length})
+              </Button>
+              {commonPatterns.map((pattern) => {
+                const count = patternCounts[pattern.name] || 0;
+                return (
+                  <Button
+                    key={pattern.name}
+                    variant={selectedPattern === pattern.name ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedPattern(pattern.name)}
+                    className={selectedPattern === pattern.name ? "bg-[#FF6B35] hover:bg-orange-600" : ""}
+                  >
+                    {pattern.name} ({count})
+                  </Button>
+                );
+              })}
+            </div>
+            
+            {/* Filtered Problems List */}
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm text-gray-600 dark:text-gray-400">
+                {selectedPattern === "All" ? "All Problems" : `${selectedPattern} Problems`}
+              </h4>
+              <div className="grid gap-2 max-h-60 overflow-y-auto">
+                {problems
+                  .filter(problem => selectedPattern === "All" || problem.pattern === selectedPattern)
+                  .map((problem) => (
+                    <div
+                      key={problem.id}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{problem.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {problem.difficulty} • {new Date(problem.solvedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <Badge
+                        className={
+                          problem.difficulty === "Easy"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            : problem.difficulty === "Medium"
+                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        }
+                      >
+                        {problem.difficulty}
+                      </Badge>
+                    </div>
+                  ))}
+                {problems.filter(problem => selectedPattern === "All" || problem.pattern === selectedPattern).length === 0 && (
+                  <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+                    {selectedPattern === "All" ? "No problems logged yet" : `No ${selectedPattern} problems found`}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Pattern Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

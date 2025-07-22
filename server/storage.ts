@@ -46,6 +46,19 @@ export interface IStorage {
     patternCounts: Record<string, number>;
     weeklyActivity: Array<{ date: string; count: number }>;
   }>;
+
+  // Reminder operations
+  getPendingReminders(): Promise<Array<{
+    type: 'problem' | 'goal';
+    id: number;
+    title: string;
+    reminderDate: Date;
+    email: string;
+  }>>;
+
+  // Streak operations
+  updateStreak(userId: number): Promise<{ currentStreak: number; previousStreak: number }>;
+  resetStreak(userId: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -95,7 +108,12 @@ export class MemStorage implements IStorage {
     this.users.set(id, user);
     
     // Create default settings for user
-    await this.updateUserSettings(id, { theme: 'dark', notifications: true });
+    await this.updateUserSettings(id, { 
+      theme: 'dark', 
+      notifications: true,
+      currentStreak: 0,
+      reminderEmail: user.email
+    });
     
     return user;
   }
@@ -318,6 +336,76 @@ export class MemStorage implements IStorage {
       patternCounts,
       weeklyActivity
     };
+  }
+
+  async getPendingReminders(): Promise<Array<{
+    type: 'problem' | 'goal';
+    id: number;
+    title: string;
+    reminderDate: Date;
+    email: string;
+  }>> {
+    const now = new Date();
+    const reminders: Array<{
+      type: 'problem' | 'goal';
+      id: number;
+      title: string;
+      reminderDate: Date;
+      email: string;
+    }> = [];
+
+    // Check problem reminders
+    for (const problem of this.problems.values()) {
+      if (problem.reminderDate && new Date(problem.reminderDate) <= now) {
+        const userSettings = await this.getUserSettings(problem.userId);
+        if (userSettings?.reminderEmail) {
+          reminders.push({
+            type: 'problem',
+            id: problem.id,
+            title: problem.name,
+            reminderDate: new Date(problem.reminderDate),
+            email: userSettings.reminderEmail
+          });
+        }
+      }
+    }
+
+    // Check goal reminders
+    for (const goal of this.goals.values()) {
+      if (goal.reminderDate && new Date(goal.reminderDate) <= now) {
+        const userSettings = await this.getUserSettings(goal.userId);
+        if (userSettings?.reminderEmail) {
+          reminders.push({
+            type: 'goal',
+            id: goal.id,
+            title: goal.name,
+            reminderDate: new Date(goal.reminderDate),
+            email: userSettings.reminderEmail
+          });
+        }
+      }
+    }
+
+    return reminders;
+  }
+
+  async updateStreak(userId: number): Promise<{ currentStreak: number; previousStreak: number }> {
+    const settings = await this.getUserSettings(userId);
+    const previousStreak = settings?.currentStreak || 0;
+    
+    const stats = await this.getUserStats(userId);
+    const newStreak = stats.currentStreak;
+    
+    await this.updateUserSettings(userId, { 
+      currentStreak: newStreak,
+      lastActiveDate: new Date()
+    });
+    
+    return { currentStreak: newStreak, previousStreak };
+  }
+
+  async resetStreak(userId: number): Promise<void> {
+    await this.updateUserSettings(userId, { currentStreak: 0 });
   }
 }
 
