@@ -4,7 +4,7 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig({
-  root: "client",  // 👈 REQUIRED because index.html lives in client/
+  root: "client",
   plugins: [
     react(),
     runtimeErrorOverlay(),
@@ -19,13 +19,13 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "attached_assets"),
+      "@": path.resolve(process.cwd(), "client", "src"),
+      "@shared": path.resolve(process.cwd(), "shared"),
+      "@assets": path.resolve(process.cwd(), "attached_assets"),
     },
   },
   build: {
-    outDir: "../dist/public",  // 👈 NOTE: relative to client/ due to root
+    outDir: "../dist/public",
     emptyOutDir: true,
   },
   server: {
