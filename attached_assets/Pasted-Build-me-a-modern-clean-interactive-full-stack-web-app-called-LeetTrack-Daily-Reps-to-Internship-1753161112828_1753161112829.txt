@@ -1,0 +1,94 @@
+Build me a modern, clean, interactive full-stack web app called "LeetTrack: Daily Reps to Internships." This is a motivational LeetCode tracker specifically for aspiring software engineers like me.
+
+The goal is to help me *track, stay consistent, and visualize* my LeetCode progress as I work toward getting software engineering internships.
+
+---
+
+💻 Features and Pages:
+
+1. **Home Dashboard**
+   - Shows total problems solved
+   - Shows today's reps completed out of my goal (e.g., "3/5 done today!")
+   - Shows streaks (e.g., "You're on a 4-day streak!")
+   - Progress bar or chart of problems solved per day/week
+   - Show motivational message when I hit my reps (like “🔥 You’re on fire!”)
+
+2. **Problem Log Page**
+   - List of all problems I’ve solved
+   - Table should include:
+     - Problem title
+     - Difficulty (Easy, Medium, Hard)
+     - Pattern/Topic (e.g., Sliding Window, DFS, Two Pointers)
+     - Date solved
+     - Reps (number of times I’ve repeated the problem)
+     - Status (Solved, Need Review)
+   - I should be able to add, edit, or delete entries here (CRUD functionality)
+   - Include a "Mark as Reviewed" button per problem
+
+3. **Filters and Search**
+   - I should be able to filter problems by:
+     - Difficulty
+     - Pattern
+     - Status
+     - Reps
+     - Date range
+   - Also include a search bar to find problems by name
+
+4. **Goal Setting Page**
+   - Set custom daily rep goals (e.g., "5 reps a day")
+   - Option to change this anytime
+   - Set longer-term goals (e.g., “Finish 100 problems in 30 days”)
+   - Show goal progress bars
+
+5. **Motivation Page**
+   - Display a random motivational quote each day
+   - Track when I hit streaks or big milestones
+   - Include celebratory messages and animations when goals are hit
+
+6. **Settings Page**
+   - Dark mode toggle
+   - Set name or nickname for personalized greetings
+   - Reset data option
+
+---
+
+🧠 Behavior and Logic:
+
+- The dashboard updates live as I log problems or hit reps
+- Problems solved today count toward daily goal
+- When I hit my daily rep goal, I should see an animated congratulatory message
+- When I miss a day, my streak breaks and it tells me to “Get back up!”
+
+---
+
+🎨 Design Requirements:
+
+- Theme: LeetCode-style — clean, white background with pops of orange, black, and dark gray
+- Use a sleek, minimal design — avoid anything rainbow-colored or messy
+- Use modern fonts and layout — like Google’s Material UI or Tailwind CSS
+- Make sure it’s mobile-friendly (responsive design)
+
+---
+
+🛠️ Tech Stack Requirements:
+
+- Full-stack JavaScript (or TypeScript if supported)
+- Use React for the frontend
+- Use a backend framework (e.g., Node.js with Express)
+- Store data in a JSON file or use a lightweight database like SQLite or Firebase (whichever Replit AI prefers)
+- Make the site fully interactive and editable — I should be able to:
+  - Add new problems
+  - Set/change goals
+  - View and filter logs
+  - See my progress update live
+
+---
+
+📌 Final Notes:
+
+- I should be able to use this on Replit with no extra setup
+- Store data persistently if possible
+- Keep the code modular and clean so I can expand it in the future
+
+Please generate all the code and files needed (frontend, backend, styling) and include instructions on how to run it inside Replit. Make sure it’s working and live on first run.
+

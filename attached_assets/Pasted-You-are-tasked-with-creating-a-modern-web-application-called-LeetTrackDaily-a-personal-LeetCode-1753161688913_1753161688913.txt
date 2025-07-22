@@ -1,0 +1,129 @@
+You are tasked with creating a modern web application called **LeetTrackDaily**, a personal LeetCode progress tracker and visualization tool. The goal is NOT to solve LeetCode problems directly in this app but to **log and visualize my personal LeetCode practice outside of LeetCode**, with a UI design that **resembles the clean, modern, professional feel of LeetCode's interface** (preferably with an optional dark theme).
+
+---
+
+🎯 **Core features of LeetTrackDaily:**
+
+1️⃣ **Dashboard page:**
+- Shows "Today’s reps", "Weekly progress" (calendar-like view showing number of problems solved each day), "Current streak", and "Total solved".
+- Motivational quotes displayed based on user activity.
+- Highlight when user hits their daily target.
+- Visual progress bars.
+- Summary card for "Goal progress".
+
+2️⃣ **Problem Log page (/log):**
+- User can:
+  - Create, edit, delete problem entries.
+  - For each problem entry:
+    - Problem name (string input)
+    - Difficulty (dropdown: Easy, Medium, Hard)
+    - Topic (string input or multi-select tags)
+    - Tags (optional freeform text or tag selector)
+    - Status (dropdown: Solved, In Progress)
+    - Time Complexity (string input)
+    - Space Complexity (string input)
+    - Pattern or Algorithm used (text input)
+    - Why it applies (multiline text input)
+    - Variations where I can use this pattern (multiline text input)
+    - Thought process (multiline text input)
+    - Pseudocode (multiline text input)
+    - Upload a screenshot of the final working code (optional image file upload)
+- Display entries in a clean list/table/grid UI inspired by LeetCode's problem list view.
+- Filter/search support by tags, status, difficulty.
+
+3️⃣ **Goal setting page (/goals):**
+- Create, edit, delete personal goals:
+  - Goal name (e.g. "Grind 75", "Summit Prep")
+  - Target number of problems
+  - Deadline date
+  - Reps per day calculator (auto calculate how many per day needed to achieve goal based on current progress)
+  - Visual progress bar showing % complete.
+- Highlight overdue or upcoming goals.
+
+4️⃣ **Pattern Mastery page (/patterns):**
+- Group and visualize problems logged by pattern.
+- Display:
+  - Pattern name (e.g., "Two Pointers", "DFS/BFS", "Sliding Window")
+  - Number of problems solved in this pattern / total known.
+  - Progress bars for each pattern.
+
+5️⃣ **Settings page (/settings):**
+- Enable dark/light theme toggle (default to dark theme).
+- User profile avatar and name.
+- Optional calendar integration (basic scaffold for Google Calendar API).
+- Notification preferences for reminders to meet daily target.
+
+---
+
+🖥️ **Overall UI design specifications:**
+- Inspired by LeetCode's UI aesthetic:
+  - Clean typography.
+  - Neatly aligned cards, listviews, headers.
+  - Color-coding difficulties (Easy=green, Medium=orange, Hard=red).
+  - Show tags like LeetCode’s topic tags.
+  - Optional **dark theme support** (implement a theme toggle).
+  - Responsive and mobile-friendly.
+- Display motivational badges, streak icons, progress bars.
+- Should feel “motivational” but professional.
+
+---
+
+💾 **Data management:**
+- Store user data locally (for MVP) or structure it to easily support Firebase Firestore in future.
+- CRUD support for all user input.
+- Store image uploads (e.g., code screenshots) locally for now.
+
+---
+
+📦 **Tech stack requirement:**
+- Frontend framework: React.js (or Next.js).
+- Styling: TailwindCSS for styling and easy dark/light theme support.
+- State management: Context API (or Redux if necessary).
+- Form handling: React Hook Form (optional).
+- Routing: React Router (or Next.js pages if using Next.js).
+- Component library: You may use shadcn/ui, Radix UI, or Tailwind UI as needed for polished UI components.
+
+---
+
+📑 **Specific behaviors required:**
+- Every entry in the Problem Log must allow typing text in textareas (not just image uploads).
+- Pseudocode, notes, thought process, time/space complexities must all be **editable fields**.
+- Attachments for "Code Screenshot" should allow uploading a file and showing a preview thumbnail.
+- Filters/search on Problem Log: by tag, status, difficulty, and keyword.
+- Pattern Mastery page should group problems by manually assigned pattern tags.
+- Dashboard shows a streak counter and weekly heatmap view (like GitHub contribution graph).
+- Motivational quotes displayed at the top of Dashboard (can be hardcoded for MVP).
+- When daily goal is hit, show a celebratory message ("🔥 Keep it up!" or similar).
+- The app must **look and feel like a LeetCode companion tool** and respect modern UI/UX best practices.
+
+---
+
+📤 **Deployment readiness:**
+- App must run in Replit with no additional paid services.
+- All pages/components cleanly structured in `/components` and `/pages`.
+- Use modern best practices (hooks, functional components, no deprecated APIs).
+
+---
+
+Optional stretch goal:
+- Include a scaffold for future notification support (can show a dummy "Remind me" toggle).
+
+---
+
+📝 **Important summary:**
+✅ This is a companion progress tracker, not a code runner.  
+✅ I want to log and visualize my reps.  
+✅ UI should mimic the polish of LeetCode interface.  
+✅ Dark theme.  
+✅ CRUD for logs and goals.  
+✅ Visual dashboards and pattern mastery.  
+✅ Editable text fields for all logs (not image pasting).  
+✅ Optional screenshot upload for each problem logged.
+
+---
+
+🔔 Reminder: Focus on UX polish — the UI should feel motivating, beautiful, and intuitive while being functional and easy to use.
+
+---
+
+End of prompt.
