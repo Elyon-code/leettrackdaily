@@ -74,7 +74,7 @@ export function serveStatic(app: Express) {
   const __dirname = path.dirname(__filename);
 
   // Correct path:
-  const distPath = path.resolve(__dirname, "../dist/public");
+  const distPath = path.join(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
