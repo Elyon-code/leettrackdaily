@@ -73,8 +73,8 @@ export function serveStatic(app: Express) {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
-  // FIXED distPath:
-  const distPath = path.resolve(__dirname, "public");  
+  // Correct path:
+  const distPath = path.resolve(__dirname, "../dist/public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
